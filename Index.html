@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1220" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <title>Routine</title>
+  <style>
+    :root{
+      --bg:#0b1220; --card:#121b2f; --muted:#93a4c7; --text:#e9eefc;
+      --accent:#7aa2ff; --good:#4ade80; --warn:#fbbf24; --bad:#fb7185;
+      --border:rgba(255,255,255,.08);
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --r:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; background:radial-gradient(1200px 800px at 20% 0%, #162447 0%, var(--bg) 55%);
+      color:var(--text); font: 15px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+    }
+    header{
+      position:sticky; top:0; z-index:5;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(to bottom, rgba(11,18,32,.9), rgba(11,18,32,.65));
+      border-bottom:1px solid var(--border);
+      padding:14px 16px 10px;
+    }
+    .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    .title{font-size:18px; font-weight:700; letter-spacing:.2px}
+    .pill{
+      display:inline-flex; gap:8px; align-items:center;
+      padding:8px 10px; border:1px solid var(--border); border-radius:999px;
+      background: rgba(255,255,255,.03);
+      color:var(--muted);
+    }
+    .pill strong{color:var(--text); font-weight:700}
+    main{padding:14px 16px 90px; max-width:860px; margin:0 auto}
+    .grid{display:grid; grid-template-columns: 1fr; gap:12px}
+    @media (min-width: 860px){ .grid{grid-template-columns: 1.25fr .75fr} }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid var(--border);
+      border-radius:var(--r);
+      box-shadow: var(--shadow);
+      padding:14px;
+    }
+    .card h2{margin:0 0 10px; font-size:16px}
+    .muted{color:var(--muted)}
+    .btn{
+      appearance:none; border:1px solid var(--border); color:var(--text);
+      background: rgba(255,255,255,.04);
+      padding:10px 12px; border-radius:12px; font-weight:650;
+      display:inline-flex; align-items:center; gap:8px;
+      cursor:pointer;
+    }
+    .btn.primary{background: rgba(122,162,255,.18); border-color: rgba(122,162,255,.35)}
+    .btn.danger{background: rgba(251,113,133,.14); border-color: rgba(251,113,133,.35)}
+    .btn:active{transform: translateY(1px)}
+    select, input, textarea{
+      width:100%; padding:10px 12px; border-radius:12px;
+      background: rgba(255,255,255,.03);
+      border:1px solid var(--border);
+      color:var(--text);
+      outline:none;
+    }
+    textarea{min-height:160px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; font-size:13px; line-height:1.35}
+    .list{display:flex; flex-direction:column; gap:10px}
+    .item{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      border-radius:14px;
+      padding:12px;
+    }
+    .itemTop{display:flex; justify-content:space-between; gap:10px; align-items:flex-start}
+    .itemTitle{font-weight:750}
+    .tag{font-size:12px; color:var(--muted)}
+    .kv{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px}
+    .chip{
+      padding:6px 10px; border-radius:999px; border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      color:var(--muted); font-size:13px;
+    }
+    .chip strong{color:var(--text)}
+    .divider{height:1px; background:var(--border); margin:10px 0}
+    .timer{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:12px; border-radius:14px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+    }
+    .tBig{font-size:24px; font-weight:800; letter-spacing:.5px}
+    .footerBar{
+      position:fixed; left:0; right:0; bottom:0;
+      padding:10px 12px;
+      background: linear-gradient(to top, rgba(11,18,32,.92), rgba(11,18,32,.55));
+      border-top:1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+    .barInner{
+      max-width:860px; margin:0 auto;
+      display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;
+    }
+    .small{font-size:12px; color:var(--muted)}
+    .ok{color:var(--good)} .warn{color:var(--warn)} .bad{color:var(--bad)}
+  </style>
+</head>
+<body>
+<header>
+  <div class="row" style="justify-content:space-between;">
+    <div class="title">Routine</div>
+    <div class="pill" id="todayPill">Today: <strong>—</strong></div>
+  </div>
+  <div class="row" style="margin-top:10px;">
+    <button class="btn primary" id="btnToday">Today</button>
+    <button class="btn" id="btnPlan">Plan</button>
+    <button class="btn" id="btnEdit">Edit</button>
+  </div>
+</header>
+
+<main>
+  <div class="grid">
+    <section class="card" id="leftCard">
+      <!-- dynamic -->
+    </section>
+
+    <aside class="card" id="rightCard">
+      <!-- dynamic -->
+    </aside>
+  </div>
+</main>
+
+<div class="footerBar">
+  <div class="barInner">
+    <div>
+      <div class="small">Offline-ready PWA • Data saved on your phone</div>
+      <div class="small" id="saveState">Status: <span class="ok">OK</span></div>
+    </div>
+    <div class="row">
+      <button class="btn" id="btnResetTimer">Reset Timer</button>
+      <button class="btn danger" id="btnFactory">Factory Reset</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // --- PWA registration
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+  }
+
+  // --- Default plan (you will edit this later)
+  const DEFAULT_DATA = {
+    profile: { name: "Shiv", goal: "Strength • Mobility • Pickleball-ready" },
+    week: {
+      // You can map your actual week. This just provides a structure.
+      Mon: { type: "Strength", program: "Workout A" },
+      Tue: { type: "Pickleball", program: "On-court + Mobility" },
+      Wed: { type: "Strength", program: "Workout B" },
+      Thu: { type: "Walk", program: "Incline Walk + Core" },
+      Fri: { type: "Strength", program: "Workout C" },
+      Sat: { type: "Pickleball", program: "Games + Short Prehab" },
+      Sun: { type: "Recovery", program: "Mobility + Easy Walk" }
+    },
+    workouts: {
+      "Workout A": [
+        { name:"Goblet Squat", sets:"3", reps:"8–10", rest:"90s", note:"Controlled, full depth you can own." },
+        { name:"DB Bench (neutral grip)", sets:"3", reps:"8–12", rest:"90s", note:"Shoulder-friendly; stop 1 rep before wobble." },
+        { name:"1-Arm Row", sets:"3", reps:"10–12/side", rest:"75s", note:"Pull elbow to hip, pause 1 sec." },
+        { name:"Split Squat", sets:"2–3", reps:"8–10/side", rest:"90s", note:"Slow down phase." },
+        { name:"Face Pull / Band Pull-apart", sets:"3", reps:"12–15", rest:"60s", note:"Scap control." }
+      ],
+      "Workout B": [
+        { name:"Trap-bar / DB RDL", sets:"3", reps:"6–8", rest:"120s", note:"Hinge, spine neutral." },
+        { name:"Landmine Press (or incline DB)", sets:"3", reps:"8–10", rest:"90s", note:"Avoid overhead wobble zone." },
+        { name:"Lat Pulldown / Assisted Pull", sets:"3", reps:"8–12", rest:"90s", note:"Chest up, no swing." },
+        { name:"Step-ups", sets:"2–3", reps:"8–10/side", rest:"90s", note:"Drive through whole foot." },
+        { name:"Pallof Press", sets:"3", reps:"10–12/side", rest:"60s", note:"Anti-rotation core." }
+      ],
+      "Workout C": [
+        { name:"Leg Press / Squat pattern", sets:"3", reps:"10–12", rest:"90s", note:"Smooth reps." },
+        { name:"Cable Row", sets:"3", reps:"10–12", rest:"90s", note:"Pause at contraction." },
+        { name:"Chest-supported DB Press (light)", sets:"2–3", reps:"10–12", rest:"75s", note:"Only if shoulder feels stable." },
+        { name:"Hamstring Curl", sets:"3", reps:"10–12", rest:"75s", note:"Full range." },
+        { name:"Calf Raises", sets:"3", reps:"12–15", rest:"60s", note:"2-sec top pause." }
+      ],
+      "On-court + Mobility": [
+        { name:"5-min warm-up", sets:"—", reps:"—", rest:"—", note:"March + hip circles + shoulder CARs." },
+        { name:"Kitchen burst drill", sets:"6", reps:"10–12 sec", rest:"40–60 sec", note:"Explode to NVZ, decel, reset." },
+        { name:"Mobility reset", sets:"—", reps:"8–10 min", rest:"—", note:"Thoracic + hips + ankles." }
+      ],
+      "Incline Walk + Core": [
+        { name:"Incline Walk", sets:"—", reps:"25–40 min", rest:"—", note:"Nasal breathing; Zone 2-ish." },
+        { name:"Dead Bug", sets:"3", reps:"8–10/side", rest:"45s", note:"Slow, exhale fully." },
+        { name:"Side Plank", sets:"2–3", reps:"30–45 sec/side", rest:"45s", note:"Stacked ribs/hips." }
+      ],
+      "Mobility + Easy Walk": [
+        { name:"Easy Walk", sets:"—", reps:"20–30 min", rest:"—", note:"Just move." },
+        { name:"Mobility", sets:"—", reps:"10–15 min", rest:"—", note:"Shoulders, hips, ankles." }
+      ]
+    },
+    timer: { seconds: 90 }
+  };
+
+  const LS_KEY = "routine_pwa_v1";
+
+  function loadData(){
+    try{
+      const raw = localStorage.getItem(LS_KEY);
+      if(!raw) return structuredClone(DEFAULT_DATA);
+      return JSON.parse(raw);
+    }catch(e){
+      return structuredClone(DEFAULT_DATA);
+    }
+  }
+  function saveData(data){
+    localStorage.setItem(LS_KEY, JSON.stringify(data));
+    document.getElementById("saveState").innerHTML = 'Status: <span class="ok">Saved</span>';
+    setTimeout(()=> document.getElementById("saveState").innerHTML = 'Status: <span class="ok">OK</span>', 900);
+  }
+
+  let data = loadData();
+
+  // --- day helpers
+  const DAY_NAMES = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  function todayKey(){
+    const d = new Date();
+    return DAY_NAMES[d.getDay()];
+  }
+  function pad2(n){ return (n<10?"0":"")+n; }
+  function fmtClock(sec){
+    const m = Math.floor(sec/60);
+    const s = sec%60;
+    return `${pad2(m)}:${pad2(s)}`;
+  }
+
+  // --- view state
+  let view = "today"; // today | plan | edit
+  let activeDay = todayKey();
+  let activeProgram = data.week[activeDay]?.program || "Workout A";
+
+  // --- timer state
+  let timerSec = data.timer?.seconds ?? 90;
+  let remaining = timerSec;
+  let timerOn = false;
+  let timerHandle = null;
+
+  function setTodayPill(){
+    const w = data.week[activeDay];
+    const label = w ? `${activeDay} • ${w.type} • ${w.program}` : `${activeDay}`;
+    document.getElementById("todayPill").innerHTML = `Today: <strong>${label}</strong>`;
+  }
+
+  function render(){
+    setTodayPill();
+
+    const left = document.getElementById("leftCard");
+    const right = document.getElementById("rightCard");
+
+    if(view === "today"){
+      const w = data.week[activeDay];
+      activeProgram = w?.program || activeProgram;
+
+      left.innerHTML = `
+        <h2>Today’s Session</h2>
+        <div class="muted">Tap an exercise to log a quick note (saved on your phone).</div>
+        <div class="divider"></div>
+        ${renderProgram(activeProgram)}
+      `;
+
+      right.innerHTML = `
+        <h2>Rest Timer</h2>
+        <div class="timer">
+          <div>
+            <div class="small muted">Countdown</div>
+            <div class="tBig" id="tDisplay">${fmtClock(remaining)}</div>
+          </div>
+          <div class="row">
+            <button class="btn primary" id="tStart">${timerOn ? "Pause" : "Start"}</button>
+            <button class="btn" id="tPlus15">+15s</button>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <h2>Quick Notes</h2>
+        <input id="quickNote" placeholder="e.g., Shoulder felt stable on neutral-grip press" />
+        <div class="row" style="margin-top:10px;">
+          <button class="btn primary" id="saveQuick">Save Note</button>
+          <button class="btn" id="clearQuick">Clear</button>
+        </div>
+
+        <div class="divider"></div>
+        <div class="muted small">This is your “Today” screen. Edit the whole plan anytime in the Edit tab.</div>
+      `;
+
+      wireToday();
+      wireTimer();
+
+    } else if(view === "plan"){
+      left.innerHTML = `
+        <h2>Your Week</h2>
+        <div class="muted">Tap a day to view its program.</div>
+        <div class="divider"></div>
+        ${renderWeek()}
+      `;
+
+      right.innerHTML = `
+        <h2>${activeDay} • ${data.week[activeDay]?.program || ""}</h2>
+        <div class="muted">Preview</div>
+        <div class="divider"></div>
+        ${renderProgram(data.week[activeDay]?.program || activeProgram, true)}
+      `;
+
+      wirePlan();
+
+    } else if(view === "edit"){
+      left.innerHTML = `
+        <h2>Edit Your Routine (JSON)</h2>
+        <div class="muted">Paste your real Workout A/B/C here. Then tap Save. (Nothing leaves your phone.)</div>
+        <div class="divider"></div>
+        <textarea id="editor"></textarea>
+        <div class="row" style="margin-top:10px;">
+          <button class="btn primary" id="btnSave">Save</button>
+          <button class="btn" id="btnLoadDefault">Load Default</button>
+        </div>
+        <div class="divider"></div>
+        <div class="small muted">
+          Tip: You can ask me to generate the exact JSON for your current routine and you just paste it here.
+        </div>
+      `;
+
+      right.innerHTML = `
+        <h2>How to customize fast</h2>
+        <div class="list">
+          <div class="item">
+            <div class="itemTitle">1) Set your weekly split</div>
+            <div class="tag">data.week.Mon / Tue etc.</div>
+          </div>
+          <div class="item">
+            <div class="itemTitle">2) Update workouts</div>
+            <div class="tag">data.workouts["Workout A"] = [ ... ]</div>
+          </div>
+          <div class="item">
+            <div class="itemTitle">3) Choose timer</div>
+            <div class="tag">data.timer.seconds</div>
+          </div>
+        </div>
+      `;
+
+      wireEdit();
+    }
+  }
+
+  function renderWeek(){
+    const days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+    return `<div class="list">${
+      days.map(d=>{
+        const w = data.week[d];
+        const isActive = d===activeDay ? 'style="border-color: rgba(122,162,255,.55)"' : "";
+        return `
+          <div class="item" ${isActive} data-day="${d}">
+            <div class="itemTop">
+              <div>
+                <div class="itemTitle">${d}</div>
+                <div class="tag">${w?.type || "—"}</div>
+              </div>
+              <div class="tag">${w?.program || ""}</div>
+            </div>
+          </div>
+        `;
+      }).join("")
+    }</div>`;
+  }
+
+  function renderProgram(programName, compact=false){
+    const items = data.workouts[programName] || [];
+    if(!items.length){
+      return `<div class="muted">No items found for <strong>${programName}</strong>. Edit your data.</div>`;
+    }
+    return `
+      <div class="list">
+        ${items.map((ex, idx)=>`
+          <div class="item" data-ex="${programName}__${idx}">
+            <div class="itemTop">
+              <div>
+                <div class="itemTitle">${ex.name}</div>
+                <div class="tag">${ex.note || ""}</div>
+              </div>
+              <div class="tag">${compact ? "" : "Tap to add note"}</div>
+            </div>
+            <div class="kv">
+              <div class="chip"><strong>Sets</strong> ${ex.sets}</div>
+              <div class="chip"><strong>Reps</strong> ${ex.reps}</div>
+              <div class="chip"><strong>Rest</strong> ${ex.rest}</div>
+            </div>
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+
+  function wireToday(){
+    document.querySelectorAll("[data-ex]").forEach(el=>{
+      el.addEventListener("click", ()=>{
+        const key = el.getAttribute("data-ex");
+        const noteKey = "note_" + key;
+        const current = localStorage.getItem(noteKey) || "";
+        const next = prompt("Quick note (saved on your phone):", current);
+        if(next !== null){
+          localStorage.setItem(noteKey, next.trim());
+          document.getElementById("saveState").innerHTML = 'Status: <span class="ok">Saved note</span>';
+          setTimeout(()=> document.getElementById("saveState").innerHTML = 'Status: <span class="ok">OK</span>', 900);
+        }
+      });
+    });
+
+    const q = document.getElementById("quickNote");
+    const qKey = "quick_note_" + activeDay;
+    q.value = localStorage.getItem(qKey) || "";
+
+    document.getElementById("saveQuick").onclick = ()=>{
+      localStorage.setItem(qKey, q.value.trim());
+      document.getElementById("saveState").innerHTML = 'Status: <span class="ok">Saved</span>';
+      setTimeout(()=> document.getElementById("saveState").innerHTML = 'Status: <span class="ok">OK</span>', 900);
+    };
+    document.getElementById("clearQuick").onclick = ()=>{
+      q.value = "";
+      localStorage.removeItem(qKey);
+    };
+  }
+
+  function wirePlan(){
+    document.querySelectorAll("[data-day]").forEach(el=>{
+      el.addEventListener("click", ()=>{
+        activeDay = el.getAttribute("data-day");
+        render();
+      });
+    });
+  }
+
+  function wireEdit(){
+    const ed = document.getElementById("editor");
+    ed.value = JSON.stringify(data, null, 2);
+
+    document.getElementById("btnSave").onclick = ()=>{
+      try{
+        const parsed = JSON.parse(ed.value);
+        data = parsed;
+        saveData(data);
+        alert("Saved. Go to Today/Plan to see it.");
+      }catch(e){
+        alert("Invalid JSON. Tip: commas, quotes, and brackets must be correct.");
+      }
+    };
+    document.getElementById("btnLoadDefault").onclick = ()=>{
+      ed.value = JSON.stringify(DEFAULT_DATA, null, 2);
+    };
+  }
+
+  function wireTimer(){
+    const btn = document.getElementById("tStart");
+    const plus = document.getElementById("tPlus15");
+    const display = document.getElementById("tDisplay");
+
+    function tick(){
+      remaining = Math.max(0, remaining - 1);
+      display.textContent = fmtClock(remaining);
+      if(remaining <= 0){
+        stopTimer();
+        // simple beep using vibration if available
+        if (navigator.vibrate) navigator.vibrate([200,100,200,100,300]);
+      }
+    }
+    function startTimer(){
+      if(timerOn) return;
+      timerOn = true;
+      btn.textContent = "Pause";
+      timerHandle = setInterval(tick, 1000);
+    }
+    function stopTimer(){
+      timerOn = false;
+      btn.textContent = "Start";
+      if(timerHandle) clearInterval(timerHandle);
+      timerHandle = null;
+    }
+
+    btn.onclick = ()=> timerOn ? stopTimer() : startTimer();
+    plus.onclick = ()=>{
+      remaining += 15;
+      display.textContent = fmtClock(remaining);
+    };
+  }
+
+  // Global buttons
+  document.getElementById("btnToday").onclick = ()=>{ view="today"; activeDay = todayKey(); render(); };
+  document.getElementById("btnPlan").onclick  = ()=>{ view="plan"; render(); };
+  document.getElementById("btnEdit").onclick  = ()=>{ view="edit"; render(); };
+
+  document.getElementById("btnResetTimer").onclick = ()=>{
+    timerSec = data.timer?.seconds ?? 90;
+    remaining = timerSec;
+    const t = document.getElementById("tDisplay");
+    if(t) t.textContent = fmtClock(remaining);
+  };
+
+  document.getElementById("btnFactory").onclick = ()=>{
+    const ok = confirm("Factory reset? This will overwrite your saved plan on this phone.");
+    if(!ok) return;
+    localStorage.removeItem(LS_KEY);
+    data = structuredClone(DEFAULT_DATA);
+    saveData(data);
+    alert("Reset done.");
+    view="today";
+    activeDay = todayKey();
+    remaining = data.timer.seconds ?? 90;
+    render();
+  };
+
+  // First render
+  remaining = (data.timer?.seconds ?? 90);
+  render();
+</script>
+</body>
+</html>
