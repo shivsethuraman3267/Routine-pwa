@@ -522,34 +522,67 @@
   // First render
   remaining = (data.timer?.seconds ?? 90);
   render();
-</script><style>
+</script>
+  <style>
   @keyframes avidianPulse {
     0% { transform: scale(1); opacity: .75; }
     50% { transform: scale(1.12); opacity: 1; }
     100% { transform: scale(1); opacity: .75; }
   }
-</style>
-
 <div id="splash" style="
-  position: fixed; inset: 0; z-index: 9999;
-  display: flex; align-items: center; justify-content: center;
-  background: radial-gradient(1200px 800px at 20% 20%, rgba(110,231,255,.18), transparent 60%),
-              radial-gradient(1000px 700px at 80% 30%, rgba(167,139,250,.16), transparent 55%),
-              linear-gradient(180deg, #060b14, #0b1220);
+position: fixed;
+inset: 0;
+z-index: 9999;
+display: flex;
+align-items: center;
+justify-content: center;
+background: linear-gradient(180deg, #060b14, #0b1220);
 ">
+
   <div style="
     width: min(92vw, 420px);
-    padding: 22px 18px;
-    border-radius: 22px;
-    background: rgba(255,255,255,.06);
-    border: 1px solid rgba(255,255,255,.10);
+    padding: 28px 20px;
+    border-radius: 24px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
     box-shadow: 0 20px 60px rgba(0,0,0,.45);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     text-align: center;
   ">
+
     <div style="
-      width: 92px; height: 92px; margin: 2px auto 14px;
-      border
-</html>
+      width: 92px;
+      height: 92px;
+      margin: 4px auto 16px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #6ee7ff, #3b82f6);
+      animation: avidianPulse 2s ease-in-out infinite;
+    "></div>
+
+    <h1 style="
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 4px;
+      color: white;
+    ">AVIDIAN</h1>
+
+  </div>
+
+</div>
+
+<script>
+window.addEventListener("load", function () {
+  const splash = document.getElementById("splash");
+  if (!splash) return;
+
+  setTimeout(function () {
+    splash.style.transition = "opacity 0.4s ease";
+    splash.style.opacity = "0";
+    setTimeout(function () {
+      splash.style.display = "none";
+    }, 450);
+  }, 1000);
+});
+</script>
+
 </body>
+</html>
