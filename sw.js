@@ -1,4 +1,4 @@
-const CACHE = "avidian-v2";
+const CACHE = "avidian-v4";
 const ASSETS = ["./", "./index.html", "./manifest.json", "./icon.svg"];
 
 self.addEventListener("install", (e) => {
