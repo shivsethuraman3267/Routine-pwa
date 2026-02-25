@@ -1,4 +1,4 @@
-const CACHE = "routine-pwa-v1";
+const CACHE = "avidian-v2";
 const ASSETS = ["./", "./index.html", "./manifest.json", "./icon.svg"];
 
 self.addEventListener("install", (e) => {
